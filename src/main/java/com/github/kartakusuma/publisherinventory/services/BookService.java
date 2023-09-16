@@ -24,7 +24,7 @@ public class BookService {
     }
 
     @Transactional
-    public Optional<Book> getByIdBook(Long id) {
+    public Optional<Book> getBookById(Long id) {
         return bookRepository.findById(id);
     }
 

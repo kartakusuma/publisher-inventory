@@ -24,7 +24,7 @@ public class AuthorService {
     }
 
     @Transactional
-    public Optional<Author> getByIdAuthor(Long id) {
+    public Optional<Author> getAuthorById(Long id) {
         return authorRepository.findById(id);
     }
 
