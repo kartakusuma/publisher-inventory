@@ -1,6 +1,7 @@
 package com.github.kartakusuma.publisherinventory.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -23,8 +24,8 @@ public class AuthorService {
     }
 
     @Transactional
-    public Author getByIdAuthor(Long id) {
-        return authorRepository.findById(id).orElse(null);
+    public Optional<Author> getByIdAuthor(Long id) {
+        return authorRepository.findById(id);
     }
 
     @Transactional
@@ -34,21 +35,21 @@ public class AuthorService {
 
     @Transactional
     public Author updateAuthor(Long id, Author updateAuthor) {
-        Author existingAuthor = authorRepository.findById(id).orElse(null);
+        Optional<Author> existingAuthor = authorRepository.findById(id);
 
-        if (existingAuthor != null) {
-            existingAuthor.setName(updateAuthor.getName());
-            existingAuthor.setEmail(updateAuthor.getEmail());
+        if (existingAuthor.isPresent()) {
+            Author author = existingAuthor.get();
+            author.setName(updateAuthor.getName());
+            author.setEmail(updateAuthor.getEmail());
 
-            return authorRepository.save(existingAuthor);
+            return authorRepository.save(author);
         } else {
             throw new IllegalArgumentException("Author not foud with id: " + id);
         }
     }
 
     @Transactional
-    public String deleteAuthor(Long id) {
+    public void deleteAuthor(Long id) {
         authorRepository.deleteById(id);
-        return "Author successfully deleted";
     }
 }
