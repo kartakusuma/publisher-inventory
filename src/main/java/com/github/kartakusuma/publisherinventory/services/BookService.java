@@ -1,6 +1,7 @@
 package com.github.kartakusuma.publisherinventory.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -23,8 +24,8 @@ public class BookService {
     }
 
     @Transactional
-    public Book getByIdBook(Long id) {
-        return bookRepository.findById(id).orElse(null);
+    public Optional<Book> getByIdBook(Long id) {
+        return bookRepository.findById(id);
     }
 
     @Transactional
@@ -34,21 +35,20 @@ public class BookService {
 
     @Transactional
     public Book updateBook(Long id, Book updateBook) {
-        Book existingBook = bookRepository.findById(id).orElse(null);
+        Optional<Book> existingBook = bookRepository.findById(id);
 
-        if (existingBook != null) {
-            existingBook.setTitle(updateBook.getTitle());
-            existingBook.setDescription(updateBook.getDescription());
-
-            return bookRepository.save(existingBook);
+        if (existingBook.isPresent()) {
+            Book book = existingBook.get();
+            book.setTitle(updateBook.getTitle());
+            book.setDescription(updateBook.getDescription());
+            return bookRepository.save(book);
         } else {
             throw new IllegalArgumentException("Book not found with id:" + id);
         }
     }
 
     @Transactional
-    public String deleteBook(Long id) {
+    public void deleteBook(Long id) {
         bookRepository.deleteById(id);
-        return "Book successfully deleted";
     }
 }
