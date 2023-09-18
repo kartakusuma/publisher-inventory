@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.kartakusuma.publisherinventory.dto.AuthorInput;
 import com.github.kartakusuma.publisherinventory.entities.Author;
 import com.github.kartakusuma.publisherinventory.services.AuthorService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/authors")
@@ -40,14 +43,22 @@ public class AuthorController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Author> createAuthor(@RequestBody Author author) {
+    public ResponseEntity<Author> createAuthor(@RequestBody @Valid AuthorInput authorInput) {
+        Author author = new Author();
+        author.setName(authorInput.getName());
+        author.setEmail(authorInput.getEmail());
+
         Author createdAuthor = authorService.createAuthor(author);
         return new ResponseEntity<>(createdAuthor, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Author> updateAuthor(@PathVariable Long id, @RequestBody Author author) {
+    public ResponseEntity<Author> updateAuthor(@PathVariable Long id, @RequestBody @Valid AuthorInput authorInput) {
         try {
+            Author author = new Author();
+            author.setName(authorInput.getName());
+            author.setEmail(authorInput.getEmail());
+
             Author updatedAuthor = authorService.updateAuthor(id, author);
             return new ResponseEntity<>(updatedAuthor, HttpStatus.OK);
         } catch (Exception e) {
